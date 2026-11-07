@@ -20,7 +20,39 @@ function buildGoogleUsername(email: string): string {
 }
 
 async function ensureGoogleUser(email: string) {
-  const baseUsername = buildGoogleUsername(email);
+  const normalizedEmail = email.trim().toLowerCase();
+  const baseUsername = buildGoogleUsername(normalizedEmail);
+
+  const { data: existingUserByEmail, error: existingUserByEmailError } =
+    await supabaseAdmin
+      .from("users")
+      .select("id, username, email")
+      .eq("email", normalizedEmail)
+      .maybeSingle();
+
+  if (existingUserByEmailError) {
+    const message = existingUserByEmailError.message.includes("Could not find the table")
+      ? "Supabase schema is missing the public.users table. Run the project migration first."
+      : existingUserByEmailError.message;
+
+    throw new Error(`Failed to look up Google user: ${message}`);
+  }
+
+  if (existingUserByEmail) {
+    if (!existingUserByEmail.email) {
+      const { error: updateError } = await supabaseAdmin
+        .from("users")
+        .update({ email: normalizedEmail })
+        .eq("id", existingUserByEmail.id);
+
+      if (updateError) {
+        throw new Error(`Failed to save Google user email: ${updateError.message}`);
+      }
+    }
+
+    return existingUserByEmail;
+  }
+
   let candidateUsername = baseUsername;
   let suffix = 1;
 
@@ -51,9 +83,10 @@ async function ensureGoogleUser(email: string) {
         .insert({
           id: userId,
           username: candidateUsername,
+          email: normalizedEmail,
           password_hash: passwordHash,
         })
-        .select("id, username")
+        .select("id, username, email")
         .single();
 
       if (insertError || !createdUser) {

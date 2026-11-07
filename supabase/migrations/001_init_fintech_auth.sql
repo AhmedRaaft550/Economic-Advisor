@@ -40,6 +40,7 @@ $$;
 
 alter table public.users enable row level security;
 alter table public.expenses enable row level security;
+ALTER TABLE users ADD COLUMN email TEXT UNIQUE;
 
 create policy "Users can insert own row"
 on public.users
