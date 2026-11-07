@@ -14,7 +14,7 @@ import {
 } from "@/lib/auth/security";
 import { createSupabaseServerClient, supabase } from "@/lib/db/supabase";
 import { loginSchema, signUpSchema } from "@/lib/validations/auth";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 
 export type AuthResult = {
   success: boolean;
@@ -27,11 +27,25 @@ export type AuthResult = {
 };
 
 export async function signInWithGoogle(): Promise<AuthResult> {
+  const headerStore = await headers();
+  const forwardedProto = headerStore.get("x-forwarded-proto") ?? "https";
+  const forwardedHost =
+    headerStore.get("x-forwarded-host") ??
+    headerStore.get("host") ??
+    process.env.VERCEL_URL ??
+    "localhost:3000";
+
   const siteOrigin =
     process.env.NEXT_PUBLIC_SITE_URL ??
-    (process.env.VERCEL_URL
-      ? `https://${process.env.VERCEL_URL}`
-      : "http://localhost:3000");
+    (() => {
+      if (forwardedHost) {
+        return `${forwardedProto}://${forwardedHost}`.replace(/\/$/, "");
+      }
+
+      return process.env.VERCEL_URL
+        ? `https://${process.env.VERCEL_URL}`
+        : "http://localhost:3000";
+    })();
 
   const redirectTo = new URL("/auth/callback", siteOrigin).toString();
 
@@ -46,7 +60,6 @@ export async function signInWithGoogle(): Promise<AuthResult> {
       },
     },
   });
-  console.log(data);
 
   if (error || !data?.url) {
     return {

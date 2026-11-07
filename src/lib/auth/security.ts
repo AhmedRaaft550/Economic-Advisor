@@ -85,7 +85,7 @@ export async function setAuthCookie(
   const cookieOptions = {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "strict" as const,
+    sameSite: "lax" as const,
     path: "/",
     maxAge: SESSION_TTL_SECONDS,
   };
