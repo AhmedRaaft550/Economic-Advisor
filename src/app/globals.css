@@ -1,26 +1,170 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0d1117;
+  --foreground: #e5e7eb;
+  --surface: #f3f5f8;
+  --surface-strong: #e7ebf0;
+  --panel: #f0f2f5;
+  --panel-border: rgba(96, 113, 132, 0.18);
+  --ink: #1d2431;
+  --muted: #5b6472;
+  --primary: #0b2d52;
+  --primary-soft: #dfeaf8;
+  --accent: #1d4c8f;
+  --success: #32b36d;
+  --shadow: rgba(8, 16, 26, 0.2);
+}
+
+html[dir="rtl"] body {
+  font-family: var(--font-kufam), sans-serif;
+}
+
+html[dir="ltr"] body {
+  font-family: var(--font-cairo), sans-serif;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* --font-sans: var(--font-geist-sans); */
+  /* --font-mono: var(--font-geist-mono); */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  min-height: 100%;
 }
 
 body {
-  background: var(--background);
+  margin: 0;
+  background:
+    radial-gradient(
+      circle at 10% 10%,
+      rgba(255, 255, 255, 0.04),
+      transparent 22%
+    ),
+    radial-gradient(
+      circle at 90% 20%,
+      rgba(255, 255, 255, 0.03),
+      transparent 24%
+    ),
+    #0d1117;
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(
+    rgba(255, 255, 255, 0.2) 0.7px,
+    transparent 0.9px
+  );
+  background-size: 18px 18px;
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.login-shell {
+  position: relative;
+  z-index: 1;
+}
+
+.login-card {
+  background: rgba(241, 243, 247, 0.98);
+  border: 1px solid rgba(128, 144, 164, 0.18);
+  box-shadow: 0 24px 48px rgba(3, 8, 18, 0.32);
+}
+
+.ant-input,
+.ant-input-affix-wrapper,
+.ant-input-password {
+  background: rgba(230, 235, 240, 0.9) !important;
+  border: 1px solid transparent !important;
+  box-shadow: none !important;
+  color: var(--ink) !important;
+}
+
+.ant-input:hover,
+.ant-input:focus,
+.ant-input-affix-wrapper:hover,
+.ant-input-affix-wrapper:focus,
+.ant-input-password:hover,
+.ant-input-password:focus {
+  border-color: rgba(94, 123, 165, 0.4) !important;
+  box-shadow: none !important;
+}
+
+.ant-btn-primary {
+  background: linear-gradient(135deg, #0d2342 0%, #0f315f 100%) !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.ant-btn-primary:hover,
+.ant-btn-primary:focus {
+  background: linear-gradient(135deg, #102d57 0%, #123a6d 100%) !important;
+}
+
+.ant-checkbox-checked .ant-checkbox-inner {
+  background-color: #0d2444 !important;
+  border-color: #0d2444 !important;
+}
+
+.ant-input-affix-wrapper .ant-input-prefix {
+  margin-right: 12px;
+  color: #7a8396;
+}
+
+.login-social-button {
+  height: 72px !important;
+  border-radius: 14px !important;
+  border: 1px solid rgba(120, 132, 146, 0.22) !important;
+  background: rgba(255, 255, 255, 0.4) !important;
+  color: #1d2431 !important;
+  font-family: var(--font-kufam), sans-serif !important;
+  font-size: 1.05rem !important;
+  font-weight: 600 !important;
+  box-shadow: none !important;
+}
+
+.login-social-button .anticon {
+  font-size: 2rem;
+}
+
+.login-chip {
+  border-radius: 10px;
+  border: 1px solid rgba(105, 122, 158, 0.2);
+  background: rgba(121, 181, 255, 0.08);
+  color: #2e5b8b;
+}
+
+.login-underline-link {
+  color: #2d6bd6;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.login-underline-link:hover {
+  opacity: 0.78;
+}
+
+.login-term-line {
+  color: #536276;
+}
+
+.login-term-line strong {
+  color: #1c2c3f;
 }
